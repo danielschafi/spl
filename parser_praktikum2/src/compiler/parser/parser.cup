@@ -1,0 +1,39 @@
+import java_cup.runtime.*;
+import compiler.utils.CompilerError;
+parser code {:
+public void syntax_error(Symbol token) {
+throw CompilerError.SyntaxError(token.left, token.right);
+}
+:}
+terminal ASGN, SEMIC;
+terminal PLUS, MINUS, STAR, SLASH;
+terminal IDENT;
+terminal INTLIT;
+non terminal program;
+non terminal statement_list, statement;
+non terminal assign_statement;
+non terminal expression, term, factor;
+
+program::=
+ statement_list;
+ /* Startproduktion */
+statement_list::=
+ /* epsilon */
+| statement_list statement;
+
+statement::=
+ assign_statement;
+
+assign_statement::= IDENT ASGN expression SEMIC;
+
+expression::= expression PLUS term
+| expression MINUS term
+| term;
+
+term::= term STAR factor
+| term SLASH factor
+| factor;
+
+factor::= IDENT 
+| INTLIT;
+
