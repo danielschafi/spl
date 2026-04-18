@@ -57,6 +57,9 @@ non terminal top_decl_list;
 non terminal args_list;
 non terminal procedure_call;
 
+non terminal var_decl;
+non terminal var_decl_list;
+
 // ###### Präzedenz- und Assoziativitätsregeln ######
 
 // spätere Zeile = höhere Priorität
@@ -115,6 +118,13 @@ args_list ::= /* empty */
     | expression
     | args_list COMMA expression;
 
+var_decl_list ::=
+      /* empty */
+    | var_decl_list var_decl;
+
+var_decl ::= VAR IDENT COLON type_expr SEMICOLON;
+
+
 
 // ###### TYPES ######
 
@@ -156,7 +166,7 @@ non_if_statement ::=
     | WHILE LPAREN condition RPAREN statement
     | SEMICOLON; // empty statement  
 
-statement_block ::= LCURLY statement_list RCURLY;
+statement_block ::= LCURLY var_decl_list statement_list RCURLY;
 
 // comparisons
 condition ::= 
