@@ -1,18 +1,18 @@
 package compiler.scanner;
 
 public interface Sym {
-	public static final int EOF = 0;
+	 int EOF = 0;
 
 	// Punctutation 
-    public static final int LPAREN   = 1;  
-    public static final int RPAREN   = 2;  
-    public static final int LCURLY   = 3;  
-    public static final int RCURLY   = 4;  
-    public static final int LBRACKET = 5;  
-    public static final int RBRACKET = 6;  
-    public static final int COMMA    = 7;  
-    public static final int SEMICOLON    = 8; 
-    public static final int COLON    = 9;  
+     int LPAREN   = 1;  
+     int RPAREN   = 2;  
+     int LCURLY   = 3;  
+     int RCURLY   = 4;  
+     int LBRACKET = 5;  
+     int RBRACKET = 6;  
+     int COMMA    = 7;  
+     int SEMICOLON    = 8; 
+     int COLON    = 9;  
 
 	// Keywords
 	int ARRAY = 16;
@@ -24,16 +24,16 @@ public interface Sym {
     int WHILE = 22;   
 
 
-	public static final int VAR = 21;
-	public static final int REF = 22;
+	 int VAR = 21;
+	 int REF = 22;
 
-	public static final int IDENT = 27;
-	public static final int INTLIT = 28;
-	public static final int LOWERTHAN = 29;
-	public static final int GREATERTHAN = 30;
+	 int IDENT = 27;
+	 int INTLIT = 28;
+	 int LOWERTHAN = 29;
+	 int GREATERTHAN = 30;
 
-	public static final int PRINTC = 32;
-	public static final int STRING = 33;
+	 int PRINTC = 32;
+	 int STRING = 33;
 
 
 	int ASGN = 35;

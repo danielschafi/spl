@@ -18,7 +18,7 @@ public class Main {
 			Scanner scanner = new Scanner(source);
 			Parser p = new Parser(scanner);
 			p.parse();
-			//p.debug_parse();
+			p.debug_parse();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 			System.exit(-1);

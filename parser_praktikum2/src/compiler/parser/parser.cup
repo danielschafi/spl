@@ -1,39 +1,130 @@
+package compiler.parser;
 import java_cup.runtime.*;
 import compiler.utils.CompilerError;
 parser code {:
-public void syntax_error(Symbol token) {
-throw CompilerError.SyntaxError(token.left, token.right);
-}
+    public void syntax_error(Symbol token) {
+        throw CompilerError.SyntaxError(token.left, token.right);
+    }
 :}
-terminal ASGN, SEMIC;
-terminal PLUS, MINUS, STAR, SLASH;
-terminal IDENT;
-terminal INTLIT;
+
+
+// Terminal Symbols
+terminal LPAREN ,RPAREN, LCURLY, RCURLY, LBRACKET, RBRACKET, COMMA, SEMICOLON, COLON;
+terminal OF;
+terminal IF;
+terminal ELSE;
+terminal WHILE;
+terminal PROC; 
+
+terminal IDENT; // Variable names 
+terminal INTLIT; // Integer
+terminal ARRAY;
+terminal STRING;
+terminal TYPE;
+terminal REF;
+terminal VAR;
+
+terminal ASGN; // :=
+terminal EQ, NEQ, PLUS, MINUS, SLASH, STAR, LT, GT, LEQ, GEQ;
+terminal PRINTC;
+
+
+// Non Terminals
 non terminal program;
 non terminal statement_list, statement;
+non terminal matched_statement, unmatched_statement;
+non terminal non_if_statement;
+
 non terminal assign_statement;
-non terminal expression, term, factor;
+non terminal expression; // any computavble value
+non terminal term;
+non terminal factor;
+non terminal lvalue; // writable subset of expressions (vars, arrays, etc.)
+non terminal condition; // comparisons
 
-program::=
- statement_list;
- /* Startproduktion */
+
+// Präzedenz- und Assoziativitätsregeln
+// spätere Zeile = höhere Priorität
+
+// precedence left EQ, NEQ, LT, GT, LEQ, GEQ;
+
+// punkt vor strich
+precedence left PLUS, MINUS;
+precedence left STAR, SLASH;
+
+// unary minus hat vorrang e.g. 4 * -1 = -4
+
+
+//Grammatik
+
+// program entry point
+program::=statement_list;
+    /* Startproduktion */
+
+// sequence of statements (possibly empty)
 statement_list::=
- /* epsilon */
-| statement_list statement;
+    /* epsilon */
+    | statement_list statement;
+ 
+// assignments, control flow things
 
-statement::=
- assign_statement;
+statement::= 
+      matched_statement
+    | unmatched_statement;
 
-assign_statement::= IDENT ASGN expression SEMIC;
+// Normal statements and ifs that already have amatching else
+matched_statement ::= 
+      non_if_statement // Normal statements get treated without matching rules
+    | IF LPAREN condition RPAREN matched_statement ELSE matched_statement;
 
-expression::= expression PLUS term
-| expression MINUS term
-| term;
+// Statement without closing else, or statement that contains other statement that IS matched
+unmatched_statement ::= 
+      IF LPAREN condition RPAREN statement
+    | IF LPAREN condition RPAREN matched_statement ELSE unmatched_statement;
 
-term::= term STAR factor
-| term SLASH factor
-| factor;
+non_if_statement ::= 
+      assign_statement
+    | LCURLY statement_list RCURLY
+    | WHILE LPAREN condition RPAREN statement
+    | SEMICOLON; // empty statement  
 
-factor::= IDENT 
-| INTLIT;
+
+// comparisons
+condition ::= 
+      expression EQ expression
+    | expression NEQ expression
+    | expression LT expression
+    | expression GT expression
+    | expression LEQ expression
+    | expression GEQ expression;
+
+
+// writable locations: variable or indexed array element
+lvalue ::= 
+      IDENT 
+    | lvalue LBRACKET expression RBRACKET ;
+
+// assignment writes an expression value into an lvalue
+assign_statement::= 
+    lvalue ASGN expression SEMICOLON;
+
+// additive expressions (+, -)
+expression::= 
+      expression PLUS term
+    | expression MINUS term
+    | term;
+
+// multiplicative expressions (*, /)
+term::= 
+      term STAR factor
+    | term SLASH factor
+    | factor;
+
+// atomic expressions and unary minus
+factor::= 
+      lvalue 
+    | INTLIT
+    | LPAREN expression RPAREN
+    | MINUS factor ; // unary minus has precedence e.g. 4* -1 = -4
+
 
