@@ -8,7 +8,7 @@ parser code {:
 :}
 
 
-// Terminal Symbols
+// ##### Terminal Symbols ######
 terminal LPAREN ,RPAREN, LCURLY, RCURLY, LBRACKET, RBRACKET, COMMA, SEMICOLON, COLON;
 terminal OF;
 terminal IF;
@@ -30,7 +30,8 @@ terminal EQ, NEQ, PLUS, MINUS, SLASH, STAR, LT, GT, LEQ, GEQ;
 terminal PRINTC;
 
 
-// Non Terminals
+
+// ##### Non Terminal Symbols #####
 non terminal program;
 non terminal statement_list, statement;
 non terminal matched_statement, unmatched_statement;
@@ -43,10 +44,22 @@ non terminal factor;
 non terminal lvalue; // writable subset of expressions (vars, arrays, etc.)
 non terminal condition; // comparisons
 
+non terminal procedure_decl;
+non terminal param_list;
+non terminal param;
+non terminal type_decl;
+non terminal type_expr;
+non terminal statement_block;
 
-// Präzedenz- und Assoziativitätsregeln
+non terminal top_decl;
+non terminal top_decl_list;
+
+non terminal args_list;
+non terminal procedure_call;
+
+// ###### Präzedenz- und Assoziativitätsregeln ######
+
 // spätere Zeile = höhere Priorität
-
 
 // Dangling else: matched if without else, sees else. Decide reduce or shift
 // Tell cup explicitly hot to resolve the shift reduce conflict
@@ -63,11 +76,58 @@ precedence left STAR, SLASH;
 precedence nonassoc EQ, NEQ, LT, GT, LEQ, GEQ; // nonassoc -> not allowed to chain without parantheses
 
 
-//Grammatik
+
+
+// ###### TOP LEVEL DECLARATIONS ######
 
 // program entry point
-program::=statement_list;
-    /* Startproduktion */
+// Expand to top level variable and type declarations
+program ::= top_decl_list;
+
+// Can be empty or chain various declarations of whatever type
+top_decl_list ::= /*empty*/
+    | top_decl_list top_decl;
+
+// Any declaration
+top_decl ::= type_decl
+    | procedure_decl;
+
+
+
+// ###### PROCEDURES ######
+
+// proc add ( x : int, y : int, ref ergebnis : int ) {}
+procedure_decl ::= PROC IDENT LPAREN param_list RPAREN statement_block; 
+
+procedure_call ::= IDENT LPAREN args_list RPAREN SEMICOLON;
+
+// x : int, y : int, ref ergebnis : int
+param_list ::= /*empty*/
+    | param
+    | param_list COMMA param;
+
+// params
+param ::= IDENT COLON type_expr
+    | REF IDENT COLON type_expr;
+
+
+args_list ::= /* empty */
+    | expression
+    | args_list COMMA expression;
+
+
+// ###### TYPES ######
+
+// Types: type vektor = array [10] of int;
+type_decl ::= TYPE IDENT EQ type_expr;
+ 
+// IDENT for user defined types
+type_expr ::= IDENT 
+    | ARRAY LBRACKET INTLIT RBRACKET OF type_expr;
+
+
+
+// ###### PROGRAM COMPONENTS ######
 
 // sequence of statements (possibly empty)
 statement_list::=
@@ -91,10 +151,12 @@ unmatched_statement ::=
 
 non_if_statement ::= 
       assign_statement
-    | LCURLY statement_list RCURLY
+    | statement_block
+    | procedure_call
     | WHILE LPAREN condition RPAREN statement
     | SEMICOLON; // empty statement  
 
+statement_block ::= LCURLY statement_list RCURLY;
 
 // comparisons
 condition ::= 
