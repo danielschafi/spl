@@ -8,41 +8,42 @@ package compiler.parser;
 /** CUP generated class containing symbol constants. */
 public class Sym {
   /* terminals */
-  public static final int GEQ = 34;
-  public static final int LT = 31;
-  public static final int ASGN = 24;
-  public static final int IDENT = 20;
-  public static final int SEMICOLON = 9;
-  public static final int ELSE = 14;
-  public static final int PLUS = 27;
-  public static final int RPAREN = 3;
-  public static final int WHILE = 17;
-  public static final int STAR = 30;
-  public static final int SLASH = 29;
-  public static final int RCURLY = 5;
-  public static final int REF = 19;
-  public static final int IF = 13;
-  public static final int GT = 32;
-  public static final int LPAREN = 2;
   public static final int LBRACKET = 6;
-  public static final int COLON = 10;
-  public static final int OF = 12;
-  public static final int RBRACKET = 7;
-  public static final int PRINTC = 22;
-  public static final int LCURLY = 4;
-  public static final int STRING = 23;
-  public static final int INTLIT = 21;
-  public static final int TYPE = 16;
-  public static final int COMMA = 8;
-  public static final int EOF = 0;
+  public static final int ASGN = 24;
+  public static final int SLASH = 29;
+  public static final int LPAREN = 2;
+  public static final int ARRAY = 19;
   public static final int MINUS = 28;
+  public static final int REF = 22;
+  public static final int STAR = 30;
+  public static final int RPAREN = 3;
+  public static final int SEMICOLON = 9;
+  public static final int INTLIT = 17;
+  public static final int LT = 31;
+  public static final int TYPE = 21;
+  public static final int COMMA = 8;
+  public static final int GEQ = 34;
+  public static final int PLUS = 27;
+  public static final int IF = 12;
+  public static final int OF = 11;
+  public static final int EOF = 0;
+  public static final int RBRACKET = 7;
   public static final int error = 1;
-  public static final int PROC = 15;
-  public static final int EQ = 25;
-  public static final int LEQ = 33;
+  public static final int LCURLY = 4;
   public static final int NEQ = 26;
-  public static final int ARRAY = 11;
-  public static final int VAR = 18;
+  public static final int IDENT = 16;
+  public static final int EQ = 25;
+  public static final int RCURLY = 5;
+  public static final int PRINTC = 35;
+  public static final int COLON = 10;
+  public static final int ELSE = 13;
+  public static final int WHILE = 14;
+  public static final int LEQ = 33;
+  public static final int PROC = 15;
+  public static final int STRING = 20;
+  public static final int HEXLIT = 18;
+  public static final int GT = 32;
+  public static final int VAR = 23;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -55,19 +56,19 @@ public class Sym {
   "COMMA",
   "SEMICOLON",
   "COLON",
-  "ARRAY",
   "OF",
   "IF",
   "ELSE",
-  "PROC",
-  "TYPE",
   "WHILE",
-  "VAR",
-  "REF",
+  "PROC",
   "IDENT",
   "INTLIT",
-  "PRINTC",
+  "HEXLIT",
+  "ARRAY",
   "STRING",
+  "TYPE",
+  "REF",
+  "VAR",
   "ASGN",
   "EQ",
   "NEQ",
@@ -78,7 +79,8 @@ public class Sym {
   "LT",
   "GT",
   "LEQ",
-  "GEQ"
+  "GEQ",
+  "PRINTC"
   };
 }
 

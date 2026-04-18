@@ -18,11 +18,12 @@ terminal PROC;
 
 terminal IDENT; // Variable names 
 terminal INTLIT; // Integer
-terminal ARRAY;
-terminal STRING;
-terminal TYPE;
+terminal HEXLIT; // hexadecimal 0x[0-9][a-zA-Z]
+terminal ARRAY; // usage of arrays without full indexing only in procedure calls. (if dim=2, always need to use specify dims for access)
+terminal STRING; // 'a'
+terminal TYPE; // Datatype type vector = array [5] of int;
 terminal REF;
-terminal VAR;
+terminal VAR; // variable declatartion var x: int;
 
 terminal ASGN; // :=
 terminal EQ, NEQ, PLUS, MINUS, SLASH, STAR, LT, GT, LEQ, GEQ;
@@ -36,7 +37,7 @@ non terminal matched_statement, unmatched_statement;
 non terminal non_if_statement;
 
 non terminal assign_statement;
-non terminal expression; // any computavble value
+non terminal expression; // any computavble value, represent a value
 non terminal term;
 non terminal factor;
 non terminal lvalue; // writable subset of expressions (vars, arrays, etc.)
@@ -46,13 +47,20 @@ non terminal condition; // comparisons
 // Präzedenz- und Assoziativitätsregeln
 // spätere Zeile = höhere Priorität
 
-// precedence left EQ, NEQ, LT, GT, LEQ, GEQ;
 
-// punkt vor strich
+// Dangling else: matched if without else, sees else. Decide reduce or shift
+// Tell cup explicitly hot to resolve the shift reduce conflict
+// Give ELSE precedence over IF, if it can expand, it should
+// In spl the inner ifs must have a matching else if we want an else somewhere outside
+precedence nonassoc IF;
+precedence nonassoc ELSE;
+
+// punkt vor strich and if two ops of same precedence appear next to each other, start from the left a-b-c -> (a-b) - c
 precedence left PLUS, MINUS;
 precedence left STAR, SLASH;
 
-// unary minus hat vorrang e.g. 4 * -1 = -4
+//only one relational operator allowed per condition 1 = 2 > 3 not allowed 
+precedence nonassoc EQ, NEQ, LT, GT, LEQ, GEQ; // nonassoc -> not allowed to chain without parantheses
 
 
 //Grammatik
@@ -66,8 +74,7 @@ statement_list::=
     /* epsilon */
     | statement_list statement;
  
-// assignments, control flow things
-
+// assignments, control flow things / elements of a programm
 statement::= 
       matched_statement
     | unmatched_statement;
